@@ -3,7 +3,7 @@
 ### `Accessible`
 
 Runs the app in the development mode.<br />
-Open [https://sudoku-solver-alpha.azurewebsites.net) to view it in the browser.
+Open (https://sudoku-solver-alpha.azurewebsites.net) to view it in the browser.
 
 
 ### `Features`
