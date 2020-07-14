@@ -6,12 +6,12 @@ namespace Tests
 {
     public class SudokuServiceTests
     {
-        private SudokuService service;
+        private SudokuService _service;
 
         [SetUp]
         public void Setup()
         {
-            service = new SudokuService();
+            _service = new SudokuService();
         }
 
         [Test]
@@ -32,10 +32,10 @@ namespace Tests
             };
 
             // Act
-            SudokuValue[,] actual = service.FormatSudokuBoard(unformattedBoard);
+            SudokuValue[,] actual = _service.FormatSudokuBoard(unformattedBoard);
             
             // Assert
-            Assert.IsTrue(CheckIfSudokuBoardsAreEqual(expected, actual));
+            Assert.IsTrue(_service.CheckIfSudokuBoardsAreEqual(expected, actual));
         }
 
 
@@ -46,7 +46,7 @@ namespace Tests
             SudokuSolutionRequest request = new SudokuSolutionRequest() { currentBoard = GetValidFormattedBoard()};
 
             // Act
-            SudokuSolution solution = service.FindSolution(request);
+            SudokuSolution solution = _service.FindSolution(request);
             
             // Assert
             Assert.IsTrue(solution.isSuccessful, "Should return true");
@@ -59,37 +59,134 @@ namespace Tests
             SudokuSolutionRequest request = new SudokuSolutionRequest() { currentBoard = GetInvalidFormattedBoard() };
 
             // Act
-            SudokuSolution solution = service.FindSolution(request);
+            SudokuSolution solution = _service.FindSolution(request);
 
             // Assert
             Assert.IsFalse(solution.isSuccessful, "Should return false");
         }
 
         [Test]
-        public void IsRequestValid_RequestWillBeValid_ReturnsTrue()
+        public void IsSolutionRequestValid_RequestWillBeValid_ReturnsTrue()
         {
             // Arrange
             SudokuSolutionRequest request = new SudokuSolutionRequest() { currentBoard = new SudokuValue[9, 9] };
 
             // Act
-            bool actual = service.IsRequestValid(request);
+            bool actual = _service.IsSolutionRequestValid(request);
 
             // Assert
             Assert.IsTrue(actual, "Should return true");
         }
 
         [Test]
-        public void IsRequestValid_RequestWillBeInvalid_false()
+        public void IsSolutionRequestValid_RequestWillBeInvalid_ReturnsFalse()
         {
             // Arrange
             SudokuSolutionRequest request = new SudokuSolutionRequest() { currentBoard = new SudokuValue[2, 2] };
 
             // Act
-            bool actual = service.IsRequestValid(request);
+            bool actual = _service.IsSolutionRequestValid(request);
 
             // Assert
             Assert.IsFalse(actual, "Should return false");
         }
+
+        [Test]
+        public void IsAnswerRequestValid_RequestWillBeValid_ReturnsTrue()
+        {
+            // Arrange
+            SudokuAnswerRequest request = new SudokuAnswerRequest()
+            {
+                edittedBoard = new SudokuValue[9, 9],
+                originalBoard = new SudokuValue[9, 9]
+            };
+
+            // Act
+            bool actual = _service.IsAnswerRequestValid(request);
+
+            // Assert
+            Assert.IsTrue(actual, "Should return true");
+        }
+
+        [Test]
+        public void IsAnswerRequestValid_RequestWillBeInvalid_ReturnsFalse()
+        {
+            // Arrange
+            SudokuAnswerRequest request = new SudokuAnswerRequest()
+            {
+                edittedBoard = new SudokuValue[1, 2],
+                originalBoard = new SudokuValue[3, 9]
+            };
+
+            // Act
+            bool actual = _service.IsAnswerRequestValid(request);
+
+            // Assert
+            Assert.IsFalse(actual, "Should return false");
+        }
+
+        [Test]
+        public void IsAnswerCorrect_AnswerShouldBeCorrect_ReturnsTrue()
+        {
+            // Arrange
+            SudokuAnswerRequest answerRequest = new SudokuAnswerRequest();
+            answerRequest.originalBoard = GetValidFormattedBoard();
+
+            SudokuSolutionRequest solutionRequest = new SudokuSolutionRequest() { currentBoard = GetValidFormattedBoard() };
+            answerRequest.edittedBoard = _service.FindSolution(solutionRequest).solution;
+
+            // Act
+            bool actual = _service.IsAnswerCorrect(answerRequest);
+
+            // Assert
+            Assert.IsTrue(actual, "Should return true");
+        }
+
+        [Test]
+        public void IsAnswerCorrect_AnswerShouldBeIncorrect_ReturnsFalse()
+        {
+            // Arrange
+            SudokuAnswerRequest answerRequest = new SudokuAnswerRequest();
+            answerRequest.originalBoard = GetValidFormattedBoard();
+            answerRequest.edittedBoard = GetValidFormattedBoard();
+
+            // Act
+            bool actual = _service.IsAnswerCorrect(answerRequest);
+
+            // Assert
+            Assert.IsFalse(actual, "Should return false");
+        }
+
+        [Test]
+        public void CheckIfSudokuBoardsAreEqual_BoardsShouldBeEqual_ReturnsTrue()
+        {
+            // Arrange
+            SudokuValue[,] board1 = GetValidFormattedBoard();
+            SudokuValue[,] board2 = GetValidFormattedBoard();
+
+            // Act
+            bool actual = _service.CheckIfSudokuBoardsAreEqual(board1, board2);
+
+            // Assert
+            Assert.IsTrue(actual, "Should return true");
+        }
+
+        [Test]
+        public void CheckIfSudokuBoardsAreEqual_BoardsShouldNotBeEqual_ReturnsFalse()
+        {
+            // Arrange
+            SudokuValue[,] board1 = GetValidFormattedBoard();
+
+            SudokuValue[,] board2 = GetValidFormattedBoard();
+            board2[0, 0].value = 10;
+
+            // Act
+            bool actual = _service.CheckIfSudokuBoardsAreEqual(board1, board2);
+
+            // Assert
+            Assert.IsFalse(actual, "Should return false");
+        }
+
 
         private SudokuValue[,] GetValidFormattedBoard()
         {
@@ -105,7 +202,7 @@ namespace Tests
                 { 5, 0, 0, 0, 0, 3, 8, 0, 0 },
                 { 9, 7, 8, 0, 2, 0, 3, 6, 0 }
             };
-            return service.FormatSudokuBoard(unformattedValidBoard);
+            return _service.FormatSudokuBoard(unformattedValidBoard);
         }
 
         private SudokuValue[,] GetInvalidFormattedBoard()
@@ -122,29 +219,7 @@ namespace Tests
                 { 5, 0, 2, 0, 0, 0, 0, 0, 2 },
                 { 0, 7, 8, 0, 2, 0, 0, 6, 0 }
             };
-            return service.FormatSudokuBoard(unformattedInvalidBoard);
-        }
-
-        private bool CheckIfSudokuBoardsAreEqual(SudokuValue[,] board1, SudokuValue[,] board2)
-        {
-            if (board1.GetLength(0) == board2.GetLength(0) && board1.GetLength(1) == board2.GetLength(1))
-            {
-                for (int i = 0; i < board1.GetLength(0); i++)
-                {
-                    for (int y = 0; y < board1.GetLength(1); y++)
-                    {
-                        if (board1[i, y].value != board2[i, y].value) return false;
-
-                        if (board1[i, y].wasGiven != board2[i, y].wasGiven) return false;
-                    }
-                }
-                return true;
-
-            }
-            else
-            {
-                return false;
-            }
+            return _service.FormatSudokuBoard(unformattedInvalidBoard);
         }
     }
 }
