@@ -11,5 +11,7 @@ namespace Sudoku_Application.Services
         SudokuSolution FindSolution(SudokuSolutionRequest solutionRequest);
 
         bool IsRequestValid(SudokuSolutionRequest solutionRequest);
+
+        SudokuValue[,] FormatSudokuBoard(int[,] board);
     }
 }
