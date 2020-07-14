@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Sudoku_Application.Models;
-using Sudoku_Application.Service;
+using Sudoku_Application.Services;
 
 namespace Sudoku_Application.Controllers
 {
