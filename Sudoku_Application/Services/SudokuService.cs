@@ -98,11 +98,19 @@ namespace Sudoku_Application.Services
             return true;
         }
 
-        public bool IsRequestValid(SudokuSolutionRequest solutionRequest)
+        public bool IsSolutionRequestValid(SudokuSolutionRequest solutionRequest)
         {
             SudokuValue[,] board = solutionRequest.currentBoard;
 
             return board.GetLength(0) == 9 && board.GetLength(1) == 9;
+        }
+
+        public bool IsAnswerRequestValid(SudokuAnswerRequest answerRequest)
+        {
+            return answerRequest.edittedBoard.GetLength(0) == 9 &&
+                answerRequest.edittedBoard.GetLength(1) == 9 &&
+                answerRequest.originalBoard.GetLength(0) == 9 &&
+                answerRequest.originalBoard.GetLength(1) == 9;
         }
 
         public SudokuValue[,] FormatSudokuBoard(int[,] board)
@@ -120,6 +128,42 @@ namespace Sudoku_Application.Services
             }
 
             return newBoard;
+        }
+
+        public bool IsAnswerCorrect(SudokuAnswerRequest answerRequest)
+        {
+            SudokuValue[,] solutionToOriginalBoard = answerRequest.originalBoard;
+
+            bool hasFoundSolution = UseBackTrackingAlgorithmToFindSolution(solutionToOriginalBoard);
+
+            if (hasFoundSolution)
+            {
+                return CheckIfSudokuBoardsAreEqual(answerRequest.originalBoard, answerRequest.edittedBoard);
+            }
+
+            return false;
+        }
+
+        public bool CheckIfSudokuBoardsAreEqual(SudokuValue[,] board1, SudokuValue[,] board2)
+        {
+            if (board1.GetLength(0) == board2.GetLength(0) && board1.GetLength(1) == board2.GetLength(1))
+            {
+                for (int i = 0; i < board1.GetLength(0); i++)
+                {
+                    for (int y = 0; y < board1.GetLength(1); y++)
+                    {
+                        if (board1[i, y].value != board2[i, y].value) return false;
+
+                        if (board1[i, y].wasGiven != board2[i, y].wasGiven) return false;
+                    }
+                }
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

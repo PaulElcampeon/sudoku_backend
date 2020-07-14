@@ -10,7 +10,13 @@ namespace Sudoku_Application.Services
     {
         SudokuSolution FindSolution(SudokuSolutionRequest solutionRequest);
 
-        bool IsRequestValid(SudokuSolutionRequest solutionRequest);
+        bool IsAnswerCorrect(SudokuAnswerRequest answerRequest);
+
+        bool IsSolutionRequestValid(SudokuSolutionRequest solutionRequest);
+
+        bool CheckIfSudokuBoardsAreEqual(SudokuValue[,] board1, SudokuValue[,] board2);
+
+        bool IsAnswerRequestValid(SudokuAnswerRequest answerRequest);
 
         SudokuValue[,] FormatSudokuBoard(int[,] board);
     }
