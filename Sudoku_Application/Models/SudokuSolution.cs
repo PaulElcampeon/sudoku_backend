@@ -7,6 +7,8 @@ namespace Sudoku_Application.Models
 {
     public class SudokuSolution
     {
+        public bool isSuccessful { get; set; }
+
         public int[,] solution { get; set; }
     }
 }
