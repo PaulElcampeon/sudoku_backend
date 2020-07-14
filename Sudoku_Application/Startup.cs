@@ -45,6 +45,8 @@ namespace Sudoku_Application
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            app.UseMvc();
         }
     }
 }
