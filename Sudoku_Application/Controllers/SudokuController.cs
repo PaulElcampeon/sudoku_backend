@@ -21,14 +21,28 @@ namespace Sudoku_Application.Controllers
         }
 
         [HttpPost]
-        [Route("solution")]
+        [Route("get-solution")]
         public ActionResult<SudokuSolution> GetSolution(SudokuSolutionRequest solutionRequest)
         {
-            if (_service.IsRequestValid(solutionRequest))
+            if (_service.IsSolutionRequestValid(solutionRequest))
             {
                 SudokuSolution solution = _service.FindSolution(solutionRequest);
 
                 return solution;
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("check-answer")]
+        public ActionResult<SudokuSolution> Submit(SudokuAnswerRequest answerRequest)
+        {
+            if (_service.IsAnswerRequestValid(answerRequest))
+            {
+                bool isCorrect = _service.IsAnswerCorrect(answerRequest);
+
+                return new SudokuSolution() { isSuccessful = isCorrect };
             }
 
             return BadRequest();
