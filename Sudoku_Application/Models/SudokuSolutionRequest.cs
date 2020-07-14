@@ -7,6 +7,6 @@ namespace Sudoku_Application.Models
 {
     public class SudokuSolutionRequest
     {
-        public int[,] currentBoard { get; set; }
+        public SudokuValue[,] currentBoard { get; set; }
     }
 }

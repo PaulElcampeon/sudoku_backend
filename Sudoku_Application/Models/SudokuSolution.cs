@@ -9,6 +9,6 @@ namespace Sudoku_Application.Models
     {
         public bool isSuccessful { get; set; }
 
-        public int[,] solution { get; set; }
+        public SudokuValue[,] solution { get; set; }
     }
 }
